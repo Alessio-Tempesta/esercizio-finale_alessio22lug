@@ -1,0 +1,36 @@
+1 obbiettivo genearlae : l'obbiettivo è simulare, anazlizzare e visualizzare i dati di affuenza di un parco per un anno intero, utilizzando python, le librerie numpy, 
+pandas e matpltlib
+
+2 Obiettivi del Progetto
+ Generare una serie temporale di dati sui visitatori giornalieri di un parco per un anno (365 giorni).
+ Analizzare i dati per ottenere la media e la deviazione standard dei visitatori mensili.
+ Visualizzare i dati con grafici per evidenziare tendenze e stagionalità.
+
+3 Generazione dei Dati
+Parametri di Generazione:
+   Numero di Giorni: 365 giorni.
+   Media Visitatori Giornalieri: 2000 visitatori.
+   Deviazione Standard: 500 visitatori.
+   Trend Crescente: Aumento lineare dei visitatori fino a un incremento massimo di 500 visitatori durante l'anno.
+
+ Logica di Generazione:
+  1 Dati Base: I visitatori giornalieri sono simulati utilizzando una distribuzione normale con la media e la deviazione standard specificate.
+  2 Trend: Un trend crescente viene aggiunto ai dati base per simulare l'aumento della popolarità del parco nel tempo.
+  3 Gestione degli Errori: Controlli sono implementati per garantire che i parametri di input siano validi (numero di giorni e deviazione standard devono essere positivi).
+
+4 Creazione del DataFrame
+  Data: Creazione di un intervallo di date a partire da una data iniziale (ad esempio, '2023-01-01') per il numero specificato di giorni.
+  DataFrame: Creazione di un DataFrame con le date come indice e il numero di visitatori come colonna.
+
+5 Analisi dei Dati
+- Calcoli Mensili:
+  - Media Mensile: Calcolo della media dei visitatori per ciascun mese.
+  - Deviazione Standard Mensile: Calcolo della deviazione standard dei visitatori per ciascun mese.
+- Gestione degli Errori: Verifica che i DataFrame non siano vuoti prima di eseguire le operazioni di resampling.
+
+6. Visualizzazione dei Dati
+- Grafico Giornaliero:
+  - Creazione di un grafico a linee del numero di visitatori giornalieri.
+  - Aggiunta della media mobile a 7 giorni per mostrare le tendenze settimanali.
+- Grafico Mensile:
+  - Creazione di un grafico della media mensile dei visitatori.

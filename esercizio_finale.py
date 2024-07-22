@@ -19,55 +19,106 @@
 # tendenza settimanale.
 # Creare un secondo grafico che mostri la media mensile dei visitatori.
 
-import numpy as np 
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
-# Generimao dati visitatori per un num.specifciato di giorni
-def genera_dati_visitatori(giorni=365, media=2000, dev_standard=500, trend_max=500):
+# Genera dati dei visitatori per un numero specificato di giorni
+def genera_dati_visitatori(giorni=365, media=2000, dev_standard=500, trend_max=500):      # np.array Array di dati generati con una componente di trend crescente.
     if giorni <= 0:
-        print("errore: il numero di giorni dev'essere positivo.")
+        print("Errore: il numero di giorni dev'essere positivo.")
         return np.array([])
     if media <= 0:
-        print("erorre la media dev'essere postiva.")
+        print("Errore: la media dev'essere positiva.")
         return np.array([])
     if dev_standard <= 0:
-        print("errore la devizaione standard dev'essere positva")
+        print("Errore: la deviazione standard dev'essere positiva.")
         return np.array([])
     
-    visitatori_base = np.random.normal(media, dev_standard, giorni)     #genero dati base
-    trend= np.linspace(0, trend_max, giorni)   #genero il trend
-    return visitatori_base + trend         #creazione dei dati finali 
-    
-    # crea un intervallo di date a partire da una data iniizalòe per num.di giorni specificicato
-def crea_inervallo_date(data_inizio, giorni):
+    visitatori_base = np.random.normal(media, dev_standard, giorni)  # Genera dati base
+    trend = np.linspace(0, trend_max, giorni)  # Genera il trend
+    return visitatori_base + trend  # Creazione dei dati finali
+
+# Crea un intervallo di date a partire da una data iniziale per un numero specificato di giorni
+def crea_intervallo_date(data_inizio, giorni):
     try:
-        return pd.date_range(start=pd.to_datetime(data_inizio), periods= giorni, freq='D')
+        return pd.date_range(start=pd.to_datetime(data_inizio), periods=giorni, freq='D')
     except:
         print("Errore nella creazione dell'intervallo di date")
         return pd.DatetimeIndex([])
-    
-    
-    # Crea un DataFrame con le date come indice e il numero di visitatori come colonna
+
+# Crea un DataFrame con le date come indice e il numero di visitatori come colonna
 def crea_dataframe(visitatori_giornalieri, date):
     if len(visitatori_giornalieri) != len(date):
         print("Errore: La lunghezza dei dati dei visitatori non corrisponde al numero di date.")
-        return pd.DataFrame()                         # Restituisce un DataFrame vuoto in caso di errore
+        return pd.DataFrame()       # Restituisce un DataFrame vuoto in caso di errore
     return pd.DataFrame(data={'Visitatori': visitatori_giornalieri}, index=date)
 
-
-    # calcola la media e la deviazione standard dei visitatori per mese
+# Calcola la media e la deviazione standard dei visitatori per mese
 def analizza_dati(dati):
     if dati.empty:
-        print("Errore Il DataFrame dei dati è vuoto.")
+        print("Errore: Il DataFrame dei dati è vuoto.")
         return pd.DataFrame(), pd.DataFrame()  # Restituisce DataFrame vuoti in caso di errore
     media_mensile = dati.resample('M').mean()
     std_mensile = dati.resample('M').std()
     return media_mensile, std_mensile
 
-
+# Traccia il numero di visitatori giornalieri
 def traccia_visitatori_giornalieri(dati):
     if dati.empty:
-        print("erorre il dataframe dei dati è vuoto")
+        print("Errore: il DataFrame dei dati è vuoto.")
         return
+    
+    plt.figure(figsize=(14, 7))
+    plt.plot(dati.index, dati['Visitatori'], label='Visitatori giornalieri')
+
+    # Aggiungi la media mobile a 7 giorni
+    dati['Media Mobile 7 Giorni'] = dati['Visitatori'].rolling(window=7).mean()
+    plt.plot(dati.index, dati['Media Mobile 7 Giorni'], label='Media mobile a 7 giorni', color='blue')
+    plt.xlabel('Data')
+    plt.ylabel('Numero di Visitatori')
+    plt.title('Numero di visitatori giornalieri con media mobile a 7 giorni')
+    plt.legend()
+    plt.show()
+
+# Traccia la media mensile dei visitatori
+def traccia_media_mensile(media_mensile):
+    if media_mensile.empty:
+        print("Errore: il DataFrame della media mensile è vuoto.")
+        return
+
+    plt.figure(figsize=(14, 7))
+    plt.plot(media_mensile.index, media_mensile['Visitatori'], label='Media mensile dei visitatori')
+    plt.xlabel('Mese')
+    plt.ylabel('Numero di Visitatori')
+    plt.title('Media mensile dei visitatori')
+    plt.legend()
+    plt.show()
+
+# Funzione principale
+def main():
+    giorni = 365
+    data_inizio = '2023-01-01'
+    media_visitatori = 2000
+    dev_standard = 500
+    trend_max = 500
+    
+    # Genera i dati dei visitatori
+    visitatori = genera_dati_visitatori(giorni, media_visitatori, dev_standard, trend_max)
+    # Crea l'intervallo di date
+    date = crea_intervallo_date(data_inizio, giorni)
+    # Crea il DataFrame
+    df = crea_dataframe(visitatori, date)
+    # Analizza i dati
+    media_mensile, std_mensile = analizza_dati(df)
+    
+    print(f"Media mensile dei visitatori:\n{media_mensile}")
+    print(f"\nDeviazione standard mensile dei visitatori:\n{std_mensile}")
+    
+    # Traccia i grafici
+    traccia_visitatori_giornalieri(df)
+    traccia_media_mensile(media_mensile)
+
+# Esegui la funzione principale
+main()
